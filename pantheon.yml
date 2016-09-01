@@ -4,11 +4,3 @@ api_version: 1
 php_version: 7.0
 
 web_docroot: true
-
-workflows:
-
-  deploy_product:
-    after:
-      - type: webphp
-        description: Setup site for the first time
-        script: private/scripts/site_setup.php

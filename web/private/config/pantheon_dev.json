@@ -1,7 +1,0 @@
-{
-    "active_plugins": "a:9:{i:0;s:44:\"wp-native-php-sessions\/pantheon-sessions.php\";i:1;s:49:\"advanced-tinymce-configuration\/adv-mce-config.php\";i:2;s:36:\"google-sitemap-generator\/sitemap.php\";i:3;s:29:\"link-library\/link-library.php\";i:4;s:55:\"pantheon-wpms-github-sync\/pantheon-wpms-github-sync.php\";i:5;s:47:\"regenerate-thumbnails\/regenerate-thumbnails.php\";i:6;s:17:\"wp-cfm\/wp-cfm.php\";i:7;s:19:\"wp-gfm\/markdown.php\";i:9;s:21:\"wp-redis\/wp-redis.php\";}",
-    "current_theme": "WordPress at Scale",
-    "page_on_front": "7",
-    "permalink_structure": "\/%postname%\/",
-    ".label": "Pantheon Dev"
-}
