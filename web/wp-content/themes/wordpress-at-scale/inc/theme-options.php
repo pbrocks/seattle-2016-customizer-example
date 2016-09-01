@@ -13,7 +13,13 @@ function _s_theme_setting_customizer_menu() {
 		__( 'Theme Options', '_s' ),
 		__( 'Theme Options', '_s' ),
 		'edit_theme_options',
-		'customize.php?autofocus[section]=wordpress_at_scale_theme_options&return=' . urlencode( get_admin_url() )
+
+		/*
+		 * Autofocus the theme options panel.
+		 *
+		 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#focusing
+		 */
+		'customize.php?autofocus[panel]=_s_theme_options&return=' . urlencode( get_admin_url() )
 	);
 }
 
@@ -47,18 +53,76 @@ add_action( 'admin_menu', '_s_theme_setting_customizer_menu' );
  * @param object $wp_customize an instance of the WP_Customize_Manager class.
  */
 function _s_theme_setting_customizer( $wp_customize ) {
-	// Add theme options section to customizer.
+	/**
+	 * Adds a panel for theme options
+	 *
+	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#panels
+	 */
+	$wp_customize->add_panel( '_s_theme_options', array(
+		'title'       => __( 'Theme Options', '_s' ),
+		'description' => '<p>' . __( 'Options for the WordPress at Scale theme', '_s' ) . '</p>',
+		// Include html tags such as <p>.
+		'priority'    => 160,
+		// Mixed with top-level-section hierarchy.
+	) );
+
+	/*
+	 * Add theme options section to customizer.
+	 *
+	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#sections
+	 */
 	$wp_customize->add_section(
 		// Use a unique, descriptive section slug to avoid conflicts.
 		'wordpress_at_scale_theme_options',
 		array(
-			'title'       => __( 'Theme Options', '_s' ),
-			'description' => __( 'Options for the WordPress at Scale theme', '_s' ),
-			'priority'    => 1,
+			'title'           => __( 'Banner Options', '_s' ),
+			'description'     => __( 'Options for the WordPress at Scale theme', '_s' ),
+			'priority'        => 1,
+			// Add the section to our custom panel.
+			'panel'           => '_s_theme_options',
+
+			/*
+			 * Add an active callback so the banner theme options are only visible on the front page, where the banner is
+			 * this way the user won't get confused by seeing options that don't apply to the page they are viewing.
+			 *
+			 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#contextual-controls-sections-and-panels
+			 * @link https://core.trac.wordpress.org/browser/tags/4.6/src/wp-includes/class-wp-customize-section.php#L133
+			 */
+			'active_callback' => 'is_front_page',
 		)
 	);
 
-	// Add individual settings to the theme options section.
+	/*
+	 * Add individual settings to the theme options section.
+	 *
+	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#settings
+	 */
+	$wp_customize->add_setting( '_s_home_banner', array(
+		'capability'        => 'manage_options',
+		'type'              => 'theme_mod',
+		'default'           => get_bloginfo( 'name' ),
+
+		/*
+		 * Sanitization callbacks are important!
+		 * Don't add settings with out sanitizing them
+		 */
+		'sanitize_callback' => 'sanitize_text_field',
+
+		/*
+		 * Uncomment this to get going with postMessage.
+		 * You'll also need to apply the setting changes with JS.
+		 *
+		 * Uncomment the customizer-preview.js enqueue in inc/enqueue-script-styles.php
+		 * then open the file assets/js/customizer-preview.js and
+		 * follow the directions to add some jQuery to apply the changes.
+		 *
+		 * Once you get this field working with postMessage add it to the other fields as well.
+		 *
+		 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#using-postmessage-for-improved-setting-previewing
+		 */
+		// 'transport' => 'postMessage',
+	) );
+
 	$wp_customize->add_setting( '_s_home_banner_size', array(
 		'capability'        => 'manage_options',
 		'type'              => 'theme_mod',
@@ -73,28 +137,11 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'sanitize_callback' => 'sanitize_hex_color',
 	) );
 
-	$wp_customize->add_setting( '_s_home_banner', array(
-		'capability'        => 'manage_options',
-		'type'              => 'theme_mod',
-		'default'           => get_bloginfo( 'name' ),
-		'sanitize_callback' => 'sanitize_text_field',
-	) );
-
-	// Add a Customizer control for each setting.
-	$wp_customize->add_control(
-		new \WP_Customize_Color_Control(
-			$wp_customize,
-			'_s_home_banner_color',
-			array(
-				'priority'    => 10,
-				'section'     => 'wordpress_at_scale_theme_options',
-				'label'       => __( 'Banner Text Color', '_s' ),
-				'description' => __( '', '_s' ),
-				'default'     => '#000000',
-			)
-		)
-	);
-
+	/*
+	 * Add a Customizer control for each setting.
+	 *
+	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#controls
+	 */
 	$wp_customize->add_control( '_s_home_banner', array(
 		'type'        => 'text',
 		'priority'    => 10,
@@ -112,6 +159,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'section'     => 'wordpress_at_scale_theme_options',
 		'label'       => __( 'Banner Font Size', '_s' ),
 		'description' => __( '', '_s' ),
+		// You can add HTML5 attributes too.
 		'input_attrs' => array(
 			'min'  => 48,
 			'max'  => 80,
@@ -119,6 +167,20 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		),
 		'default'     => '48',
 	) );
+
+	$wp_customize->add_control(
+		new \WP_Customize_Color_Control(
+			$wp_customize,
+			'_s_home_banner_color',
+			array(
+				'priority'    => 10,
+				'section'     => 'wordpress_at_scale_theme_options',
+				'label'       => __( 'Banner Text Color', '_s' ),
+				'description' => __( '', '_s' ),
+				'default'     => '#000000',
+			)
+		)
+	);
 
 }
 

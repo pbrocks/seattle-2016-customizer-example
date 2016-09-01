@@ -8,11 +8,15 @@
 $theme_dir = get_stylesheet_directory();
 
 $theme_includes = array(
+
+	/*
+	 * inc/themeoptions.php is where you should be starting.
+	 */
+	'theme-options.php',
 	'theme-setup.php',
 	'template-tags.php',
 	'enqueue-script-styles.php',
 	'body-classes.php',
-	'theme-options.php',
 	'prev-next-menu-post-ids.php',
 	'add-excerpt-to-page.php',
 	'pageloop.php',
