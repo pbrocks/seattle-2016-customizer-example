@@ -72,7 +72,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#sections
 	 */
 	$wp_customize->add_section(
-		// Use a unique, descriptive section slug to avoid conflicts.
+	// Use a unique, descriptive section slug to avoid conflicts.
 		'wordpress_at_scale_theme_options',
 		array(
 			'title'           => __( 'Banner Options', '_s' ),
@@ -113,7 +113,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		 *
 		 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#using-postmessage-for-improved-setting-previewing
 		 */
-		'transport' => 'postMessage',
+		'transport'         => 'postMessage',
 	) );
 
 	$wp_customize->add_setting( '_s_home_banner_size', array(
@@ -121,7 +121,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'type'              => 'theme_mod',
 		'default'           => 48,
 		'sanitize_callback' => '_s_sanitize_home_banner_size',
-		'transport' => 'postMessage',
+		'transport'         => 'postMessage',
 	) );
 
 	$wp_customize->add_setting( '_s_home_banner_color', array(
@@ -129,7 +129,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'type'              => 'theme_mod',
 		'default'           => '#FFFFFF',
 		'sanitize_callback' => 'sanitize_hex_color',
-		'transport' => 'postMessage',
+		'transport'         => 'postMessage',
 	) );
 
 	/*
@@ -178,16 +178,54 @@ function _s_theme_setting_customizer( $wp_customize ) {
 	);
 
 	/**
-	 * Next add a field to the Customizer for the banner background image.
-	 * This will need to be core custom control and should utilize partial refresh.
+	 * Add a field to the Customizer for the banner background image.
 	 *
 	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#core-custom-controls
 	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#selective-refresh-fast-accurate-updates
 	 */
 
+	$wp_customize->add_setting( '_s_home_banner_image', array(
+		'capability'        => 'manage_options',
+		'type'              => 'theme_mod',
+		'sanitize_callback' => 'absint',
+		// We need postMessage to avoid full page reload.
+		'transport' => 'postMessage',
+	) );
+
+	$wp_customize->add_control(
+		new WP_Customize_Media_Control(
+			$wp_customize,
+			'_s_home_banner_image',
+			array(
+				'label'     => __( 'Banner Background Image. Should be 1920px x 1200px', '_s' ),
+				'section'   => 'wordpress_at_scale_theme_options',
+				'mime_type' => 'image',
+				'width'     => 1920,
+				'height'    => 1200,
+			)
+		)
+	);
+
+	/**
+	 * Add a selective refresh partial for the banner
+	 * when the background image changes
+	 */
+	$wp_customize->selective_refresh->add_partial( '_s_home_banner_image', array(
+		'selector'            => '#banner-home',
+		'render_callback'     => function () {
+			_s_banner_inline_css();
+			get_template_part( 'template-parts/banner-home' );
+		},
+	) );
+
 }
 
 add_action( 'customize_register', '_s_theme_setting_customizer' );
+
+/**
+ * Add theme support for widget partial refresh
+ */
+add_theme_support( 'customize-selective-refresh-widgets' );
 
 /**
  * Output dynamic theme setting CSS

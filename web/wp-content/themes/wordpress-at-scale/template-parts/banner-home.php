@@ -1,8 +1,12 @@
 <section id="banner-home"
 	<?php
-	$banner_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-	if ( false !== $banner_img ) {
-		echo ' style="background-image:url(\'' . $banner_img . '\');"';
+	// Fallback to theme image if no custom image.
+	$banner_img_default = get_the_post_thumbnail_url( get_option( 'page-on-front' ) );
+
+	$banner_img_id = get_theme_mod( '_s_home_banner_image', $banner_img_default );
+	$banner_img    = wp_get_attachment_image_src( $banner_img_id, 'full' );
+	if ( ! empty( $banner_img ) ) {
+		echo ' style="background-image:url(\'' . $banner_img[0] . '\');"';
 	}
 	?>
 >
