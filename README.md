@@ -34,7 +34,8 @@ The `post-message` branch uses the `postMessage` transport and adds live preview
 This branch does _not_ include any Customizer functionality introduced in WordPress 4.5.
 
 ###[partial-refresh](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/partial-refresh)
-The `partial-refresh` branch expands on the theme options Customizer implementation by adding partial refresh support in `inc/theme-options.php` and `assets/js/wordpress-at-scale.js`.
+The `partial-refresh` branch expands on the theme options Customizer implementation by adding a new field for banner background image in `inc/theme-options.php`.
+ The banner background image field has partial refresh support for an optimized user experience.
 
 ##Resources
 * [The Customizer API in the WordPress developer handbook](https://developer.wordpress.org/themes/advanced-topics/customizer-api/)
