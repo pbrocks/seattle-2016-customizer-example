@@ -109,18 +109,11 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'sanitize_callback' => 'sanitize_text_field',
 
 		/*
-		 * Uncomment this to get going with postMessage.
-		 * You'll also need to apply the setting changes with JS.
-		 *
-		 * Uncomment the customizer-preview.js enqueue in inc/enqueue-script-styles.php
-		 * then open the file assets/js/customizer-preview.js and
-		 * follow the directions to add some jQuery to apply the changes.
-		 *
-		 * Once you get this field working with postMessage add it to the other fields as well.
+		 * postMessage for instant previewing of changes with JavaScript.
 		 *
 		 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#using-postmessage-for-improved-setting-previewing
 		 */
-		// 'transport' => 'postMessage',
+		'transport' => 'postMessage',
 	) );
 
 	$wp_customize->add_setting( '_s_home_banner_size', array(
@@ -128,6 +121,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'type'              => 'theme_mod',
 		'default'           => 48,
 		'sanitize_callback' => '_s_sanitize_home_banner_size',
+		'transport' => 'postMessage',
 	) );
 
 	$wp_customize->add_setting( '_s_home_banner_color', array(
@@ -135,6 +129,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'type'              => 'theme_mod',
 		'default'           => '#FFFFFF',
 		'sanitize_callback' => 'sanitize_hex_color',
+		'transport' => 'postMessage',
 	) );
 
 	/*

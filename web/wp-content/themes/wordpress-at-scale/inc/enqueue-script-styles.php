@@ -39,16 +39,18 @@ function _s_scripts_styles() {
 	wp_dequeue_script( 'wp-embed' );
 
 	/*
-	 * Uncomment the code below when you are ready to use postMessage
-	 * then open assets/js/customize-preview.js and follow the directions there.
+	 * Enqueue JavaScript to use with postMessage
 	 *
 	 * if_customize_preview is used so we don't enqueue this script outside of the customizer where it isn't needed.
 	 *
 	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#using-postmessage-for-improved-setting-previewing
 	 */
-	// if( is_customize_preview() ){
-		// wp_enqueue_script( 'customizer-preview-script', get_stylesheet_directory_uri() . '/assets/js/customizer-preview.js', array('jquery', 'customize-preview'), false, true );
-	// }
+	if ( is_customize_preview() ) {
+		wp_enqueue_script( 'customizer-preview-script', get_stylesheet_directory_uri() . '/assets/js/customizer-preview.js', array(
+			'jquery',
+			'customize-preview',
+		), false, true );
+	}
 
 }
 

@@ -1,17 +1,28 @@
 // if wp.customize exists
 if ('undefined' !== typeof wp && wp.customize) {
 
-    // wait for window load - no iframe ready event (yet)
-    jQuery(window).load(function () {
+	// wait for window load - no iframe ready event (yet)
+	jQuery(window).load(function () {
 
-        wp.customize('_s_home_banner', function (value) {
-            value.bind(function (newval) {
-                // Use jQUery and newval to update the text of #banner-title a
-            });
-        });
+		wp.customize('_s_home_banner', function (value) {
+			value.bind(function (newval) {
+				jQuery('#banner-title a').text(newval);
+			});
+		});
 
-        // Add banner text size and color here
+		wp.customize('_s_home_banner_size', function (value) {
+			value.bind(function (newval) {
+				jQuery('#banner-title a').css('font-size', newval + 'px');
+			});
+		});
 
-    });
+		wp.customize('_s_home_banner_color', function (value) {
+			value.bind(function (newval) {
+				jQuery('#banner-title a, #banner-title a:hover').css('color', newval);
+			});
+		});
+
+
+	});
 
 }
