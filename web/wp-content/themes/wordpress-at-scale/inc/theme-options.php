@@ -72,7 +72,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#sections
 	 */
 	$wp_customize->add_section(
-	// Use a unique, descriptive section slug to avoid conflicts.
+		// Use a unique, descriptive section slug to avoid conflicts.
 		'wordpress_at_scale_theme_options',
 		array(
 			'title'           => __( 'Banner Options', '_s' ),
@@ -107,6 +107,12 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		 * Don't add settings with out sanitizing them
 		 */
 		'sanitize_callback' => 'sanitize_text_field',
+
+		/*
+		 * You can have validation callbacks too.
+		 * Make items required or validate a certain format.
+		 */
+		'validate_callback' => '_s_validate_site_title',
 
 		/*
 		 * postMessage for instant previewing of changes with JavaScript.
@@ -189,7 +195,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'type'              => 'theme_mod',
 		'sanitize_callback' => 'absint',
 		// We need postMessage to avoid full page reload.
-		'transport' => 'postMessage',
+		'transport'         => 'postMessage',
 	) );
 
 	$wp_customize->add_control(
@@ -211,8 +217,8 @@ function _s_theme_setting_customizer( $wp_customize ) {
 	 * when the background image changes
 	 */
 	$wp_customize->selective_refresh->add_partial( '_s_home_banner_image', array(
-		'selector'            => '#banner-home',
-		'render_callback'     => function () {
+		'selector'        => '#banner-home',
+		'render_callback' => function () {
 			_s_banner_inline_css();
 			get_template_part( 'template-parts/banner-home' );
 		},
@@ -249,3 +255,22 @@ function _s_banner_inline_css() {
 }
 
 add_action( 'wp_head', '_s_banner_inline_css', 50 );
+
+
+/**
+ * Validate the site title text
+ *
+ * @param object $validity validity object.
+ * @param mixed  $value    user inputted value.
+ *
+ * @return object $validity
+ */
+function _s_validate_site_title( $validity, $value ) {
+	if ( '' === $value || empty( $value ) ) {
+		$validity->add( 'required', __( 'A site title is required.', '_s' ) );
+	} elseif ( 1 === preg_match( '/[wW]ordpress/', $value ) ) {
+		$validity->add( 'WordPress', __( 'Capital P dangit!', '_s' ) );
+	}
+
+	return $validity;
+}
