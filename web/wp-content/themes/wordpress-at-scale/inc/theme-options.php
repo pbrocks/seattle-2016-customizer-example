@@ -112,7 +112,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		 * You can have validation callbacks too.
 		 * Make items required or validate a certain format.
 		 */
-		'validate_callback' => '_s_validate_site_title',
+		'validate_callback' => '_s_sanitize_home_banner',
 
 		/*
 		 * postMessage for instant previewing of changes with JavaScript.
@@ -196,6 +196,7 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		'sanitize_callback' => 'absint',
 		// We need postMessage to avoid full page reload.
 		'transport'         => 'postMessage',
+		'validate_callback' => '_s_sanitize_home_banner_background',
 	) );
 
 	$wp_customize->add_control(
@@ -203,11 +204,11 @@ function _s_theme_setting_customizer( $wp_customize ) {
 			$wp_customize,
 			'_s_home_banner_image',
 			array(
-				'label'     => __( 'Banner Background Image. Should be 1920px x 1200px', '_s' ),
-				'section'   => 'wordpress_at_scale_theme_options',
-				'mime_type' => 'image',
-				'width'     => 1920,
-				'height'    => 1200,
+				'label'             => __( 'Banner Background Image. Should be 1920px x 1200px', '_s' ),
+				'section'           => 'wordpress_at_scale_theme_options',
+				'mime_type'         => 'image',
+				'width'             => 1920,
+				'height'            => 1200,
 			)
 		)
 	);
@@ -258,18 +259,37 @@ add_action( 'wp_head', '_s_banner_inline_css', 50 );
 
 
 /**
- * Validate the site title text
+ * Validate the banner title text
  *
  * @param object $validity validity object.
  * @param mixed  $value    user inputted value.
  *
  * @return object $validity
  */
-function _s_validate_site_title( $validity, $value ) {
+function _s_sanitize_home_banner( $validity, $value ) {
 	if ( '' === $value || empty( $value ) ) {
 		$validity->add( 'required', __( 'A site title is required.', '_s' ) );
 	} elseif ( 1 === preg_match( '/[wW]ordpress/', $value ) ) {
 		$validity->add( 'WordPress', __( 'Capital P dangit!', '_s' ) );
+	}
+
+	return $validity;
+}
+
+/**
+ * Validate the banner background image
+ *
+ * @param object $validity validity object.
+ * @param mixed  $value    user inputted value.
+ *
+ * @return object $validity
+ */
+function _s_sanitize_home_banner_background( $validity, $value ) {
+	if ( ! empty( $value ) ) {
+		$image_atts = wp_get_attachment_metadata( $value );
+		if ( false !== $image_atts && $image_atts['width'] < 1920 ) {
+			$validity->add( 'image-size', __( 'The banner image should be at least 1920px wide', '_s' ) );
+		}
 	}
 
 	return $validity;
