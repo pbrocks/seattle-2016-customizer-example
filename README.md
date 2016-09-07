@@ -36,6 +36,9 @@ This branch does _not_ include any Customizer functionality introduced in WordPr
 ###[partial-refresh](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/partial-refresh)
 The `partial-refresh` branch expands on the theme options Customizer implementation by adding a new field for banner background image in `inc/theme-options.php`.
  The banner background image field has partial refresh support for an optimized user experience.
+ 
+###[settings-validation](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/settings-validation)
+The `settings-validation` branch expands on the theme options Customizer implementation by adding settings validation to the banner title text and banner background image in `inc/theme-options.php`.
 
 ##Resources
 * [The Customizer API in the WordPress developer handbook](https://developer.wordpress.org/themes/advanced-topics/customizer-api/)
