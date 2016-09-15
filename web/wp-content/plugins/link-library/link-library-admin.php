@@ -67,6 +67,8 @@ class link_library_plugin_admin {
 			add_action( 'media_buttons', 'link_library_render_editor_button', 20 );
 			add_action( 'admin_footer',  array( $this, 'render_modal' ) );
 		}
+		
+		add_action( 'link_library_reciprocal_check', 'link_library_reciprocal_link_checker', 10, 4 );		
 	}
 
 	function is_edit_page( $new_edit = null ) {
@@ -337,67 +339,6 @@ class link_library_plugin_admin {
 		}
 
 		return $newurl;
-	}
-
-	function ReciprocalLinkChecker( $RecipCheckAddress = '', $recipcheckdelete403 = false, $check_type = 'reciprocal' ) {
-		global $wpdb;
-		set_time_limit(0);
-
-		if ( $RecipCheckAddress != '' ) {
-			$linkquery = "SELECT distinct *, l.link_id as proper_link_id, UNIX_TIMESTAMP(l.link_updated) as link_date ";
-			$linkquery .= "FROM " . $this->db_prefix() . "terms t ";
-			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "term_taxonomy tt ON (t.term_id = tt.term_id) ";
-			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "term_relationships tr ON (tt.term_taxonomy_id = tr.term_taxonomy_id) ";
-			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "links l ON (tr.object_id = l.link_id) ";
-			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "links_extrainfo le ON (l.link_id = le.link_id) ";
-			$linkquery .= "WHERE tt.taxonomy = 'link_category' ";
-
-			if ( 'reciprocal' == $check_type ) {
-				$linkquery .= "AND le.link_reciprocal <> '' ";
-			} elseif ( 'broken' == $check_type ) {
-				$linkquery .= "AND l.link_url <> '' ";
-			}
-
-			$linkquery .= "order by l.link_name ASC";
-
-			$links  = $wpdb->get_results( $linkquery );
-			if ( 'reciprocal' == $check_type ) {
-				echo "<strong>" . __( 'Reciprocal Link Checker Report', 'link-library' ) . "</strong><br /><br />";
-			} elseif ( 'broken' == $check_type ) {
-				echo "<strong>" . __( 'Broken Link Checker Report', 'link-library' ) . "</strong><br /><br />";
-			}
-
-			if ( $links ) {
-				foreach ( $links as $link ) {
-					global $my_link_library_plugin;
-
-					if ( 'reciprocal' == $check_type ) {
-						$reciprocal_result = $my_link_library_plugin->CheckReciprocalLink( $RecipCheckAddress, $link->link_reciprocal );
-					} elseif ( 'broken' == $check_type ) {
-						$reciprocal_result = $my_link_library_plugin->CheckReciprocalLink( $RecipCheckAddress, $link->link_url );
-					}
-
-					echo '<a href="' . $link->link_url . '">' . $link->link_name . '</a>: ';
-
-					if ( 'reciprocal' == $check_type && $reciprocal_result == 'exists_notfound' ) {
-						echo '<span style="color: #FF0000">' . __( 'Not Found', 'link-library' ) . '</span><br />';
-					} elseif ( 'reciprocal' == $check_type && $reciprocal_result == 'exists_found' ) {
-						echo '<span style="color: #00FF00">' . __( 'OK', 'link-library' ) . '</span><br />';
-					} elseif ( 'broken' == $check_type && strpos( $reciprocal_result, 'exists' ) !== false ) {
-						echo '<span style="color: #00FF00">' . __( 'Link valid', 'link-library' ) . '</span><br />';
-					} elseif ( $reciprocal_result == 'error_403' && $recipcheckdelete403 == true ) {
-						wp_delete_link( $link->link_id );
-						echo '<span style="color: #FF0000">' . __( 'Error 403: Link Deleted', 'link-library' ) . '</span><br />';
-					} elseif ( $reciprocal_result == 'error_403' && $recipcheckdelete403 == false ) {
-						echo '<span style="color: #FF0000">' . __( 'Error 403', 'link-library' ) . '</span><br />';
-					} elseif ( $reciprocal_result == 'unreachable' ) {
-						echo '<span style="color: #FF0000">' . __( 'Website Unreachable', 'link-library' ) . '</span><br />';
-					}
-				}
-			} else {
-				echo __( 'There are no links with reciprocal links associated with them', 'link-library' ) . ".<br />";
-			}
-		}
 	}
 
 	function ll_get_link_image( $url, $name, $mode, $linkid, $cid, $filepath, $filepathtype, $thumbnailsize, $thumbnailgenerator ) {
@@ -817,8 +758,8 @@ class link_library_plugin_admin {
 				$options = ll_reset_options( $settings, 'table', 'return_and_set' );
 			}
 
-			if ( isset( $_GET['copy'] ) ) {
-				$destination = $_GET['copy'];
+			if ( isset( $_GET['settingscopy'] ) ) {
+				$destination = $_GET['settingscopy'];
 				$source      = $_GET['source'];
 
 				$sourcesettingsname = 'LinkLibraryPP' . $source;
@@ -924,11 +865,11 @@ class link_library_plugin_admin {
 				echo "<div id='message' class='updated fade'><p><strong>" . __( 'Settings updated', 'link-library' ) . ".</strong></p></div>";
 			} elseif ( isset( $_GET['message'] ) && $_GET['message'] == '2' ) {
 				echo "<div id='message' class='updated fade'><p>";
-				echo $this->ReciprocalLinkChecker( $genoptions['recipcheckaddress'], $genoptions['recipcheckdelete403'], 'reciprocal' );
+				do_action( 'link_library_reciprocal_check', $this, $genoptions['recipcheckaddress'], $genoptions['recipcheckdelete403'], 'reciprocal' );
 				echo "</p></div>";
 			} elseif ( isset( $_GET['message'] ) && $_GET['message'] == '3' ) {
 				echo "<div id='message' class='updated fade'><p>";
-				echo $this->ReciprocalLinkChecker( $genoptions['recipcheckaddress'], $genoptions['recipcheckdelete403'], 'broken' );
+				do_action( 'link_library_reciprocal_check', $this, $genoptions['recipcheckaddress'], $genoptions['recipcheckdelete403'], 'broken' );
 				echo "</p></div>";
 			}
 		}
@@ -1794,7 +1735,7 @@ class link_library_plugin_admin {
 		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'currenttab' );
 		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'importrowscount' );
 		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'successimportcount' );
-		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'copy' );
+		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'settingscopy' );
 		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'reset' );
 		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'resettable' );
 		$cleanredirecturl = $this->remove_querystring_var( $cleanredirecturl, 'source' );
@@ -1926,8 +1867,10 @@ class link_library_plugin_admin {
 					}
 
 					$message = $emailbody;
-
-					$message .= "<br /><br />" . __( 'Message generated by', 'link-library' ) . " <a href='http://ylefebvre.ca/wordpress-plugins/link-library/'>Link Library</a> for Wordpress";
+					
+					if ( !$genoptions['suppressemailfooter'] ) {
+						$message .= "<br /><br />" . __( 'Message generated by', 'link-library' ) . " <a href='http://ylefebvre.ca/wordpress-plugins/link-library/'>Link Library</a> for Wordpress";
+					}
 
 					wp_mail( $linkextradata['link_submitter_email'], $emailtitle, $message, $headers );
 
@@ -2484,7 +2427,8 @@ class link_library_plugin_admin {
 				endfor;
 				?>
 			</SELECT>
-			<INPUT type="button" name="copy" value="<?php _e( 'Copy', 'link-library' ); ?>!" onClick="if (confirm('Are you sure you want to copy the contents of the selected library over the current library settings?')) { window.location= 'admin.php?page=link-library-settingssets&amp;settings=<?php echo $settings; ?>&amp;copy=<?php echo $settings; ?>&source=' + jQuery('#copysource').val(); };">
+			<?php $copypath = "'admin.php?page=link-library-settingssets&settings=" . $settings . "&settingscopy=" . $settings . "&source=' + jQuery('#copysource').val();"; ?>
+			<INPUT type="button" name="copy" value="<?php _e( 'Copy', 'link-library' ); ?>!" onClick="if (confirm('Are you sure you want to copy the contents of the selected library over the current library settings?')) { var copyurl = <?php echo $copypath; ?> window.location.href = copyurl; };">
 		<?php endif; ?>
 		</div>
 	<?php }
@@ -5086,8 +5030,67 @@ class link_library_plugin_admin {
 				break;
 		}
 	}
+}
 
+function link_library_reciprocal_link_checker( $ll_admin_class, $RecipCheckAddress = '', $recipcheckdelete403 = false, $check_type = 'reciprocal' ) {
+	global $wpdb;
+	set_time_limit(0);
 
+	if ( $RecipCheckAddress != '' ) {
+		$linkquery = "SELECT distinct *, l.link_id as proper_link_id, UNIX_TIMESTAMP(l.link_updated) as link_date ";
+		$linkquery .= "FROM " . $ll_admin_class->db_prefix() . "terms t ";
+		$linkquery .= "LEFT JOIN " . $ll_admin_class->db_prefix() . "term_taxonomy tt ON (t.term_id = tt.term_id) ";
+		$linkquery .= "LEFT JOIN " . $ll_admin_class->db_prefix() . "term_relationships tr ON (tt.term_taxonomy_id = tr.term_taxonomy_id) ";
+		$linkquery .= "LEFT JOIN " . $ll_admin_class->db_prefix() . "links l ON (tr.object_id = l.link_id) ";
+		$linkquery .= "LEFT JOIN " . $ll_admin_class->db_prefix() . "links_extrainfo le ON (l.link_id = le.link_id) ";
+		$linkquery .= "WHERE tt.taxonomy = 'link_category' ";
+
+		if ( 'reciprocal' == $check_type ) {
+			$linkquery .= "AND le.link_reciprocal <> '' ";
+		} elseif ( 'broken' == $check_type ) {
+			$linkquery .= "AND l.link_url <> '' ";
+		}
+
+		$linkquery .= "order by l.link_name ASC";
+
+		$links  = $wpdb->get_results( $linkquery );
+		if ( 'reciprocal' == $check_type ) {
+			echo "<strong>" . __( 'Reciprocal Link Checker Report', 'link-library' ) . "</strong><br /><br />";
+		} elseif ( 'broken' == $check_type ) {
+			echo "<strong>" . __( 'Broken Link Checker Report', 'link-library' ) . "</strong><br /><br />";
+		}
+
+		if ( $links ) {
+			foreach ( $links as $link ) {
+				global $my_link_library_plugin;
+
+				if ( 'reciprocal' == $check_type ) {
+					$reciprocal_result = $my_link_library_plugin->CheckReciprocalLink( $RecipCheckAddress, $link->link_reciprocal );
+				} elseif ( 'broken' == $check_type ) {
+					$reciprocal_result = $my_link_library_plugin->CheckReciprocalLink( $RecipCheckAddress, $link->link_url );
+				}
+
+				echo '<a href="' . $link->link_url . '">' . $link->link_name . '</a>: ';
+
+				if ( 'reciprocal' == $check_type && $reciprocal_result == 'exists_notfound' ) {
+					echo '<span style="color: #FF0000">' . __( 'Not Found', 'link-library' ) . '</span><br />';
+				} elseif ( 'reciprocal' == $check_type && $reciprocal_result == 'exists_found' ) {
+					echo '<span style="color: #00FF00">' . __( 'OK', 'link-library' ) . '</span><br />';
+				} elseif ( 'broken' == $check_type && strpos( $reciprocal_result, 'exists' ) !== false ) {
+					echo '<span style="color: #00FF00">' . __( 'Link valid', 'link-library' ) . '</span><br />';
+				} elseif ( $reciprocal_result == 'error_403' && $recipcheckdelete403 == true ) {
+					wp_delete_link( $link->link_id );
+					echo '<span style="color: #FF0000">' . __( 'Error 403: Link Deleted', 'link-library' ) . '</span><br />';
+				} elseif ( $reciprocal_result == 'error_403' && $recipcheckdelete403 == false ) {
+					echo '<span style="color: #FF0000">' . __( 'Error 403', 'link-library' ) . '</span><br />';
+				} elseif ( $reciprocal_result == 'unreachable' ) {
+					echo '<span style="color: #FF0000">' . __( 'Website Unreachable', 'link-library' ) . '</span><br />';
+				}
+			}
+		} else {
+			echo __( 'There are no links with reciprocal links associated with them', 'link-library' ) . ".<br />";
+		}
+	}
 }
 
 function link_library_render_editor_button() {
