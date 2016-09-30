@@ -6,7 +6,7 @@ if ('undefined' !== typeof wp && wp.customize) {
 
         wp.customize('_s_home_banner', function (value) {
             value.bind(function (newval) {
-                // Use jQUery and newval to update the text of #banner-title a
+                // Use jQuery and newval to update the text of #banner-title a
             });
         });
 
