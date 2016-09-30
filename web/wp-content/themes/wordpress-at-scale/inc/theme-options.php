@@ -182,6 +182,17 @@ function _s_theme_setting_customizer( $wp_customize ) {
 		)
 	);
 
+	/**
+	 * Next add a field to the Customizer for the banner background image.
+	 * This will need to be core custom control and should utilize partial refresh.
+	 *
+	 * Don't forget to update the banner-home template part to use the new image.
+	 * The partial refresh callback should also output the inline CSS other banner changes are not lost.
+	 *
+	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#core-custom-controls
+	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#selective-refresh-fast-accurate-updates
+	 */
+
 }
 
 add_action( 'customize_register', '_s_theme_setting_customizer' );
