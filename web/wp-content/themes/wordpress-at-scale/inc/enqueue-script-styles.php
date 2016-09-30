@@ -46,9 +46,12 @@ function _s_scripts_styles() {
 	 *
 	 * @link https://developer.wordpress.org/themes/advanced-topics/customizer-api/#using-postmessage-for-improved-setting-previewing
 	 */
-	// if( is_customize_preview() ){
-		// wp_enqueue_script( 'customizer-preview-script', get_stylesheet_directory_uri() . '/assets/js/customizer-preview.js', array('jquery', 'customize-preview'), false, true );
-	// }
+	if ( is_customize_preview() ) {
+		wp_enqueue_script( 'customizer-preview-script', get_stylesheet_directory_uri() . '/assets/js/customizer-preview.js', array(
+			'jquery',
+			'customize-preview'
+		), false, true );
+	}
 
 }
 
