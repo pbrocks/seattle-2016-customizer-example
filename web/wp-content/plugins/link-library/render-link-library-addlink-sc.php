@@ -225,7 +225,7 @@ function RenderLinkLibraryAddLinkForm( $LLPluginClass, $generaloptions, $library
             $output .= 'data-validation="required url length" data-validation-length="max255" data-validation-error-msg-required="' . __( 'Required field, URL', 'link-library' ) . '" ';
         }
 
-        $output .= 'type="text" name="link_url" id="link_url" value="' . ( isset( $_GET['addlinkurl'] ) ? esc_html( stripslashes( $_GET['addlinkurl'] ), '1') : '' ) . "\" /></td></tr>\n";
+        $output .= 'type="text" name="link_url" id="link_url" value="' . ( isset( $_GET['addlinkurl'] ) ? esc_html( stripslashes( $_GET['addlinkurl'] ), '1') : 'http://' ) . "\" /></td></tr>\n";
 
         if ( 'show' == $showaddlinkrss || 'required' == $showaddlinkrss) {
             if ( empty( $linkrsslabel ) ) {
@@ -399,7 +399,7 @@ function RenderLinkLibraryAddLinkForm( $LLPluginClass, $generaloptions, $library
 
             $output .= 'data-validation="url length' . $requiredtext . '" data-validation-length="max255" data-validation-error-msg-required="' . __( 'Required field, 1-255 chars', 'link-library' ) . '" ';
 
-            $output .= 'type="text" name="ll_reciprocal" id="ll_reciprocal" value="' . ( isset( $_GET['addlinkreciprocal'] ) ? esc_html(stripslashes($_GET['addlinkreciprocal']), '1') : '' ) . "\" /></td></tr>\n";
+            $output .= 'type="text" name="ll_reciprocal" id="ll_reciprocal" value="' . ( isset( $_GET['addlinkreciprocal'] ) ? esc_html(stripslashes($_GET['addlinkreciprocal']), '1') : 'http://' ) . "\" /></td></tr>\n";
         }
 
         if ( 'show' == $showaddlinksecondurl || 'required' == $showaddlinksecondurl) {
@@ -417,7 +417,7 @@ function RenderLinkLibraryAddLinkForm( $LLPluginClass, $generaloptions, $library
 
             $output .= 'data-validation="length' . $requiredtext . '" data-validation-length="max255" data-validation-error-msg-required="' . __( 'Required field', 'link-library' ) . '" ';
 
-            $output .= 'type="text" name="ll_secondwebaddr" id="ll_secondwebaddr" value="' . ( isset( $_GET['addlinksecondurl'] ) ? esc_html( stripslashes( $_GET['addlinksecondurl'] ), '1' ) : '' ) . "\" /></td></tr>\n";
+            $output .= 'type="text" name="ll_secondwebaddr" id="ll_secondwebaddr" value="' . ( isset( $_GET['addlinksecondurl'] ) ? esc_html( stripslashes( $_GET['addlinksecondurl'] ), '1' ) : 'http://' ) . "\" /></td></tr>\n";
         }
 
         if ( 'show' == $showaddlinktelephone || 'required' == $showaddlinktelephone) {
@@ -572,7 +572,7 @@ function RenderLinkLibraryAddLinkForm( $LLPluginClass, $generaloptions, $library
         $output .= "\t\tlengthTooShortStart: '" . addslashes( __( 'The input value is shorter than ', 'link-library' ) ). "',\n";
         $output .= "\t\tnotConfirmed: '" . addslashes( __( 'Input values could not be confirmed', 'link-library' ) ). "',\n";
         $output .= "\t\tbadDomain: '" . addslashes( __( 'Incorrect domain value', 'link-library' ) ) . "',\n";
-        $output .= "\t\tbadUrl: '" . addslashes( __( 'The input value is not a correct URL', 'link-library' ) ) . "',\n";
+        $output .= "\t\tbadUrl: '" . addslashes( __( 'The input value is not a correct URL. Requires http://.', 'link-library' ) ) . "',\n";
         $output .= "\t\tbadCustomVal: '" . addslashes( __( 'The input value is incorrect', 'link-library' ) ) . "',\n";
         $output .= "\t\tandSpaces: '" . addslashes( __( ' and spaces ', 'link-library' ) ) . "',\n";
         $output .= "\t\tbadInt: '" . addslashes( __( 'The input value was not a correct number', 'link-library' ) ) . "',\n";
