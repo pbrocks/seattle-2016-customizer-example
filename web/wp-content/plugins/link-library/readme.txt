@@ -59,6 +59,13 @@ Further configuration is available under the Link Library Settings panel.
 
 == Changelog ==
 
+= 5.9.13.12 =
+* Set initial value of user-submission URL fields to http://
+
+= 5.9.13.11 =
+* User submitted link are nwo properly saved with a submitted date
+* Clarified message for URL missing http in user submission form.
+
 = 5.9.13.10 =
 * Added hook for users to register their own link reciprocal check function
 
