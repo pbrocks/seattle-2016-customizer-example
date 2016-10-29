@@ -1,12 +1,12 @@
-#LoopConf Customizer Workshop Example Repository
-##LoopConf - October, 2016
+#Seattle Customizer Workshop Example Repository
+##WordCamp Seattle - November, 2016
 
 The objective is to start with the code in the `master` branch and iterate on the theme options implemented with the WordPress Customizer.
 
 ###Getting Started
 1. Create a new WordPress site on [Pantheon](https://pantheon.io). If you do not have a Pantheon account, you can register for a free [here](https://pantheon.io/register).
 
-1. Download the `master` branch of this repository - either using Git or downloading the [`.zip` file](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/archive/master.zip).
+1. Download the `master` branch of this repository - either using Git or downloading the [`.zip` file](https://github.com/ataylorme/seattle-2016-customizer-example/archive/master.zip).
 
 1. Ensure your Pantheon site is in SFTP mode, connect to your Pantheon site via SFTP and upload the files downloaded in the previous step to the `code` directory.
 
@@ -20,45 +20,45 @@ Other theme functionality can be found in the `wp-content/themes/wordpress-at-sc
 
 ##Branches
 
-###[master](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/master)
+###[master](https://github.com/ataylorme/seattle-2016-customizer-example/tree/master)
 The `master` branch is the starting codebase for the workshop. It adds theme options with the WordPress Customizer.
 
 The theme options use full page reload and need some improvement. The code in `inc/theme-options.php` is where you'll want to start.
 
 Modified files:
 
-* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/master/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php#L55)
+* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/seattle-2016-customizer-example/blob/master/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php#L55)
 
-###[full-page-reload](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/full-page-reload)
+###[full-page-reload](https://github.com/ataylorme/seattle-2016-customizer-example/tree/full-page-reload)
 This is an alias of the `master` branch.
   
-###[post-message](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/post-message)
+###[post-message](https://github.com/ataylorme/seattle-2016-customizer-example/tree/post-message)
 The `post-message` branch uses the `postMessage` transport and adds live preview with JavaScript in `assets/js/customizer-preview.js`.
 
 Modified files:
 
-* [themes/wordpress-at-scale/assets/js/customizer-preview.js](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/post-message/web/wp-content/themes/wordpress-at-scale/assets/js/customizer-preview.js)
-* [themes/wordpress-at-scale/inc/enqueue-script-styles.php](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/post-message/web/wp-content/themes/wordpress-at-scale/inc/enqueue-script-styles.php)
-* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/post-message/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php)
+* [themes/wordpress-at-scale/assets/js/customizer-preview.js](https://github.com/ataylorme/seattle-2016-customizer-example/blob/post-message/web/wp-content/themes/wordpress-at-scale/assets/js/customizer-preview.js)
+* [themes/wordpress-at-scale/inc/enqueue-script-styles.php](https://github.com/ataylorme/seattle-2016-customizer-example/blob/post-message/web/wp-content/themes/wordpress-at-scale/inc/enqueue-script-styles.php)
+* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/seattle-2016-customizer-example/blob/post-message/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php)
 
 This branch does _not_ include any Customizer functionality introduced in WordPress 4.5.
 
-###[partial-refresh](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/partial-refresh)
+###[partial-refresh](https://github.com/ataylorme/seattle-2016-customizer-example/tree/partial-refresh)
 The `partial-refresh` branch expands on the theme options Customizer implementation by adding a new field for banner background image in `inc/theme-options.php`.
  The banner background image field has partial refresh support for an optimized user experience.
  
 Modified files:
 
-* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/partial-refresh/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php)
-* [themes/wordpress-at-scale/template-parts/banner-home.php](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/partial-refresh/web/wp-content/themes/wordpress-at-scale/template-parts/banner-home.php)
+* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/seattle-2016-customizer-example/blob/partial-refresh/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php)
+* [themes/wordpress-at-scale/template-parts/banner-home.php](https://github.com/ataylorme/seattle-2016-customizer-example/blob/partial-refresh/web/wp-content/themes/wordpress-at-scale/template-parts/banner-home.php)
  
-###[settings-validation](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/tree/settings-validation)
+###[settings-validation](https://github.com/ataylorme/seattle-2016-customizer-example/tree/settings-validation)
 The `settings-validation` branch expands on the theme options Customizer implementation by adding settings validation to the banner title text and banner background image in `inc/theme-options.php`.
 
 Modified files:
 
-* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/settings-validation/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php)
-* [themes/wordpress-at-scale/template-parts/banner-home.php](https://github.com/ataylorme/loop-conf-2016-customizer-workshop/blob/settings-validation/web/wp-content/themes/wordpress-at-scale/template-parts/banner-home.php)
+* [themes/wordpress-at-scale/inc/theme-options.php](https://github.com/ataylorme/seattle-2016-customizer-example/blob/settings-validation/web/wp-content/themes/wordpress-at-scale/inc/theme-options.php)
+* [themes/wordpress-at-scale/template-parts/banner-home.php](https://github.com/ataylorme/seattle-2016-customizer-example/blob/settings-validation/web/wp-content/themes/wordpress-at-scale/template-parts/banner-home.php)
 
 ##Resources
 * [The Customizer API in the WordPress developer handbook](https://developer.wordpress.org/themes/advanced-topics/customizer-api/)
